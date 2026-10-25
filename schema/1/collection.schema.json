@@ -70,23 +70,43 @@
             "experimental",
             "archived"
           ],
-          "description": "current = maintained; complete = finished and not evolving; experimental = admitted under the same disclosure, claim and run-path floor with a stated, expiring reason; archived = kept visible, not maintained."
+          "description": "current = maintained; complete = finished and not evolving; experimental = admitted under the full floor with a stated, expiring reason (never a bypass); archived = kept visible, not maintained."
         },
         "title": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/text"
+            }
+          ],
           "type": "string",
           "maxLength": 80
         },
         "claim": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/text"
+            }
+          ],
           "type": "string",
           "maxLength": 240,
           "description": "One sentence: what this establishes or does."
         },
         "non_claim": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/text"
+            }
+          ],
           "type": "string",
           "maxLength": 240,
           "description": "What it does not establish. Required for studies and for any artifact that makes a correctness or security claim."
         },
         "summary": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/text"
+            }
+          ],
           "type": "string",
           "maxLength": 280
         },
@@ -107,10 +127,20 @@
           "$ref": "#/$defs/url"
         },
         "version": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/text"
+            }
+          ],
           "type": "string",
           "description": "Required for tools: the released version."
         },
         "license": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/text"
+            }
+          ],
           "type": "string",
           "description": "SPDX identifier. Required for tools and studies."
         },
@@ -136,10 +166,16 @@
               "$ref": "#/$defs/url"
             },
             "alt": {
+              "allOf": [
+                {
+                  "$ref": "#/$defs/text"
+                }
+              ],
               "type": "string",
               "maxLength": 200
             }
-          }
+          },
+          "description": "Required for tools and studies that are not archived: one strong visual above the fold (plate, figure, capture or live-demo preview)."
         },
         "related": {
           "type": "array",
@@ -183,6 +219,11 @@
           }
         },
         "status_note": {
+          "allOf": [
+            {
+              "$ref": "#/$defs/text"
+            }
+          ],
           "type": "string",
           "maxLength": 160,
           "description": "Why the status is what it is. Required for experimental (what is unproven, and the condition for promotion or removal) and archived (why, and what supersedes it)."
@@ -237,8 +278,41 @@
               "status_note"
             ]
           }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "tool",
+                  "study"
+                ]
+              },
+              "status": {
+                "enum": [
+                  "current",
+                  "complete",
+                  "experimental"
+                ]
+              }
+            },
+            "required": [
+              "type",
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "visual"
+            ]
+          }
         }
       ]
+    },
+    "text": {
+      "type": "string",
+      "pattern": "\\S",
+      "description": "Non-blank text."
     }
   }
 }

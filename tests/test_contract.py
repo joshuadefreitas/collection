@@ -51,6 +51,19 @@ class ContractTests(unittest.TestCase):
             "wrong schema version": lambda r: r.update(schema_version="2"),
             "bad evidence kind": lambda r: r["artifacts"][0]["evidence"][0].update(kind="tweet"),
             "visual without alt": lambda r: r["artifacts"][0]["visual"].pop("alt"),
+            "tool without visual": lambda r: r["artifacts"][0].pop("visual"),
+            "study without visual": lambda r: r["artifacts"][1].pop("visual"),
+            "experimental tool without visual": lambda r: r["artifacts"][0].update(status="experimental", status_note="x") or r["artifacts"][0].pop("visual"),
+            "empty status_note": lambda r: r["artifacts"][2].update(status_note=""),
+            "blank status_note": lambda r: r["artifacts"][2].update(status_note="   \n"),
+            "blank claim": lambda r: r["artifacts"][0].update(claim="  "),
+            "blank summary": lambda r: r["artifacts"][0].update(summary=""),
+            "blank title": lambda r: r["artifacts"][0].update(title=""),
+            "blank version": lambda r: r["artifacts"][0].update(version=" "),
+            "blank licence": lambda r: r["artifacts"][0].update(license=""),
+            "blank non_claim": lambda r: r["artifacts"][1].update(non_claim=" "),
+            "blank visual alt": lambda r: r["artifacts"][0]["visual"].update(alt=" "),
+            "bad updated date": lambda r: r.update(updated="25/10/2026"),
         }
         for name, change in cases.items():
             with self.subTest(name):
@@ -74,6 +87,14 @@ class ContractTests(unittest.TestCase):
         for field in self.REQUIRED_ARTIFACT:
             with self.subTest(f"artifact {field}"):
                 self.assertTrue(validate.problems(mutated(lambda r, f=field: r["artifacts"][0].pop(f))))
+
+    def test_archived_tool_and_note_need_no_visual(self):
+        registry = mutated(lambda r: None)
+        archived = next(a for a in registry["artifacts"] if a["status"] == "archived")
+        self.assertNotIn("visual", archived)
+        self.assertEqual(validate.problems(registry), [])
+        note = next(a for a in registry["artifacts"] if a["type"] == "note")
+        self.assertNotIn("visual", note)
 
     def test_example_uses_only_reserved_example_hosts(self):
         text = json.dumps(EXAMPLE)

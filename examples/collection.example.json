@@ -62,7 +62,11 @@
           "kind": "review",
           "url": "https://example.com/example-study/review"
         }
-      ]
+      ],
+      "visual": {
+        "src": "https://example.com/example-study/figure.svg",
+        "alt": "Illustrative result figure"
+      }
     },
     {
       "id": "example-note",
