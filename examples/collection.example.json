@@ -1,0 +1,105 @@
+{
+  "schema_version": "1",
+  "updated": "2026-01-01",
+  "artifacts": [
+    {
+      "id": "example-tool",
+      "type": "tool",
+      "status": "current",
+      "title": "Example tool",
+      "claim": "Prints the files a command touched.",
+      "non_claim": "Does not establish that the command is safe.",
+      "summary": "An illustrative tool entry: a command-line utility with a release, a licence and a run path.",
+      "topics": [
+        "tracing",
+        "tooling"
+      ],
+      "canonical_url": "https://example.com/example-tool",
+      "repo": "https://example.com/example-tool/repo",
+      "version": "1.2.0",
+      "license": "MIT",
+      "published": "2026-01-01",
+      "last_verified": "2026-01-01",
+      "visual": {
+        "src": "https://example.com/example-tool/plate.svg",
+        "alt": "Illustrative plate"
+      },
+      "evidence": [
+        {
+          "kind": "ci",
+          "url": "https://example.com/example-tool/ci",
+          "note": "illustrative"
+        }
+      ],
+      "supersedes": "example-tool-legacy"
+    },
+    {
+      "id": "example-study",
+      "type": "study",
+      "status": "complete",
+      "title": "Example study",
+      "claim": "On synthetic data with no signal, method A reports skill and method B does not.",
+      "non_claim": "Establishes nothing about real data.",
+      "summary": "An illustrative study entry: a question, a result, an explicit non-claim and a reproduction path.",
+      "topics": [
+        "evaluation",
+        "simulation"
+      ],
+      "canonical_url": "https://example.com/example-study",
+      "repo": "https://example.com/example-study/repo",
+      "license": "MIT",
+      "published": "2026-01-01",
+      "last_verified": "2026-01-01",
+      "related": [
+        "example-note"
+      ],
+      "evidence": [
+        {
+          "kind": "reproduction",
+          "url": "https://example.com/example-study/repro"
+        },
+        {
+          "kind": "review",
+          "url": "https://example.com/example-study/review"
+        }
+      ]
+    },
+    {
+      "id": "example-note",
+      "type": "note",
+      "status": "experimental",
+      "title": "Example note",
+      "claim": "A short illustrative argument grounded in the example study.",
+      "summary": "An illustrative note entry. Experimental status requires a status note.",
+      "topics": [
+        "evaluation"
+      ],
+      "canonical_url": "https://example.com/example-note",
+      "published": "2026-01-01",
+      "last_verified": "2026-01-01",
+      "status_note": "Illustrative: draft awaiting an independent read; remove or promote after review.",
+      "related": [
+        "example-study"
+      ]
+    },
+    {
+      "id": "example-tool-legacy",
+      "type": "tool",
+      "status": "archived",
+      "title": "Example tool (legacy)",
+      "claim": "The previous generation of the example tool.",
+      "non_claim": "Superseded; not maintained.",
+      "summary": "An illustrative archived entry kept visible with a supersession note.",
+      "topics": [
+        "tracing"
+      ],
+      "canonical_url": "https://example.com/example-tool-legacy",
+      "repo": "https://example.com/example-tool-legacy/repo",
+      "version": "0.9.0",
+      "license": "MIT",
+      "published": "2025-01-01",
+      "last_verified": "2025-06-01",
+      "status_note": "Superseded by example-tool."
+    }
+  ]
+}

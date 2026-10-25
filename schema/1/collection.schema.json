@@ -1,0 +1,244 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/joshuadefreitas/collection/main/schema/1/collection.schema.json",
+  "title": "Public collection registry, schema version 1",
+  "description": "The authoritative catalog of what is deliberately exposed under Joshua de Freitas's name. Implementation-neutral: generators and external consumers read it; none of them write it. Only admitted artifacts appear here; freshness and re-verification policy live outside this file; candidates and rejected work are tracked privately.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "updated",
+    "artifacts"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1"
+    },
+    "updated": {
+      "type": "string",
+      "format": "date"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/artifact"
+      },
+      "uniqueItems": true
+    }
+  },
+  "$defs": {
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9]+(-[a-z0-9]+)*$",
+      "maxLength": 64
+    },
+    "url": {
+      "type": "string",
+      "pattern": "^https://[^\\s]+$"
+    },
+    "artifact": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "type",
+        "status",
+        "title",
+        "claim",
+        "summary",
+        "topics",
+        "canonical_url",
+        "published",
+        "last_verified"
+      ],
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/slug",
+          "description": "Stable and immutable. Renames are expressed with supersedes, never by changing an id."
+        },
+        "type": {
+          "enum": [
+            "tool",
+            "study",
+            "note"
+          ]
+        },
+        "status": {
+          "enum": [
+            "current",
+            "complete",
+            "experimental",
+            "archived"
+          ],
+          "description": "current = maintained; complete = finished and not evolving; experimental = admitted under the same disclosure, claim and run-path floor with a stated, expiring reason; archived = kept visible, not maintained."
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "claim": {
+          "type": "string",
+          "maxLength": 240,
+          "description": "One sentence: what this establishes or does."
+        },
+        "non_claim": {
+          "type": "string",
+          "maxLength": 240,
+          "description": "What it does not establish. Required for studies and for any artifact that makes a correctness or security claim."
+        },
+        "summary": {
+          "type": "string",
+          "maxLength": 280
+        },
+        "topics": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 6,
+          "items": {
+            "$ref": "#/$defs/slug"
+          },
+          "uniqueItems": true
+        },
+        "canonical_url": {
+          "$ref": "#/$defs/url",
+          "description": "Where a reader should land first (demo, README or page)."
+        },
+        "repo": {
+          "$ref": "#/$defs/url"
+        },
+        "version": {
+          "type": "string",
+          "description": "Required for tools: the released version."
+        },
+        "license": {
+          "type": "string",
+          "description": "SPDX identifier. Required for tools and studies."
+        },
+        "published": {
+          "type": "string",
+          "format": "date",
+          "description": "Canonical first-publication date of the artifact at its canonical home. It is not a log of external channels; distribution and submission state live outside the registry."
+        },
+        "last_verified": {
+          "type": "string",
+          "format": "date",
+          "description": "Date the admission checks (including the disclosure gate) were last re-run and passed. Freshness policy, i.e. when re-verification is due, is defined outside the registry by artifact type, status and change events."
+        },
+        "visual": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "src",
+            "alt"
+          ],
+          "properties": {
+            "src": {
+              "$ref": "#/$defs/url"
+            },
+            "alt": {
+              "type": "string",
+              "maxLength": 200
+            }
+          }
+        },
+        "related": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slug"
+          },
+          "uniqueItems": true
+        },
+        "supersedes": {
+          "$ref": "#/$defs/slug"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "url"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "ci",
+                  "tests",
+                  "review",
+                  "reproduction",
+                  "paper-check",
+                  "release",
+                  "correction"
+                ]
+              },
+              "url": {
+                "$ref": "#/$defs/url"
+              },
+              "note": {
+                "type": "string",
+                "maxLength": 160
+              }
+            }
+          }
+        },
+        "status_note": {
+          "type": "string",
+          "maxLength": 160,
+          "description": "Why the status is what it is. Required for experimental (what is unproven, and the condition for promotion or removal) and archived (why, and what supersedes it)."
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "tool"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "repo",
+              "version",
+              "license"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "study"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "repo",
+              "non_claim",
+              "license"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "experimental",
+                  "archived"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "status_note"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
