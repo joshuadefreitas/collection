@@ -18,20 +18,20 @@ The public workstream is the curation and publication layer for the body of tech
 `tool` (installable, used), `study` (reproducible computational work: question, method, result, limits), `note` (short writing grounded in real work).
 
 ## Admission contract (smallest useful, by type)
-Floor for every artifact, including experimental: a one-sentence claim; summary; status; `published` and `last_verified`; canonical URL; run path where applicable; licence; disclosure-gate pass (private denylist scan of every public surface, history included); a README or page that follows the template.
+Floor for every artifact, including experimental: a one-sentence claim; summary; status; `published` and `last_verified`; canonical URL; run path where applicable; a licence (recorded in the registry's `license` field for tools and studies; a note states its content licence on its canonical page); disclosure-gate pass (private denylist scan of every public surface, history included); a README or page that follows the template.
 
 | Requirement | Tool | Study | Note |
 |---|---|---|---|
 | Explicit non-claim | if it makes a security/correctness claim | **required** | optional |
 | Run path (command or live demo) | **required** | **required** (command, seed, data provenance) | n/a |
 | Tests + CI green | **required** | **required** (quoted numbers checked against evidence) | n/a |
-| Licence (SPDX) | **required** | **required** | content licence stated |
+| Licence (SPDX in the registry) | **required** | **required** | stated on the canonical page (registry field optional) |
 | Version / release | **required** | tag when complete | n/a |
 | One strong visual above the fold | **required** (unless archived) | **required** (unless archived) | optional |
 | Independent verification | for security/correctness claims | **required** for the headline result | n/a |
 | Corrections visible | n/a | required if any result was corrected | if applicable |
 
-`experimental` is not a bypass. It keeps the entire floor above: claim, non-claim for studies, run path, licence, tests present, one visual (tools and studies), disclosure pass. It relaxes only independent verification of secondary results and release tagging. It requires a non-blank `status_note` stating what is unproven and the real condition for promotion or removal, and it is re-evaluated at the next verification. If it would not be respectable to publish, it is not experimental, it is not admitted.
+`experimental` is not a bypass. It keeps the entire floor above: claim, non-claim for studies, run path, licence (as above), tests present, one visual (tools and studies), disclosure pass. It relaxes only independent verification of secondary results and release tagging. It requires a non-blank `status_note` stating what is unproven and the real condition for promotion or removal, and it is re-evaluated at the next verification. If it would not be respectable to publish, it is not experimental, it is not admitted.
 
 ## Registry (`collection.json`, schema v1)
 Fields: `schema_version`, `updated`, and per artifact `id` (immutable), `type`, `status`, `title`, `claim`, `non_claim`, `summary`, `topics`, `canonical_url`, `repo`, `version`, `license`, `published`, `last_verified`, `visual`, `related`, `supersedes`, typed public `evidence`, plus `status_note` (required for experimental and archived). Topics are kebab-case slugs. A small controlled vocabulary (`topics.json`) is created with the first admission and checked by the generator; until then topics are free-form slugs and the schema only constrains their shape. Renames are expressed with `supersedes`, never by changing an id.

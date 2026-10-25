@@ -64,6 +64,11 @@ class ContractTests(unittest.TestCase):
             "blank non_claim": lambda r: r["artifacts"][1].update(non_claim=" "),
             "blank visual alt": lambda r: r["artifacts"][0]["visual"].update(alt=" "),
             "bad updated date": lambda r: r.update(updated="25/10/2026"),
+            "bad last_verified date": lambda r: r["artifacts"][0].update(last_verified="yesterday"),
+            "extra visual property": lambda r: r["artifacts"][0]["visual"].update(credit="x"),
+            "extra evidence property": lambda r: r["artifacts"][0]["evidence"][0].update(score=1),
+            "blank evidence note": lambda r: r["artifacts"][0]["evidence"][0].update(note=" \n "),
+            "empty evidence note": lambda r: r["artifacts"][0]["evidence"][0].update(note=""),
         }
         for name, change in cases.items():
             with self.subTest(name):
@@ -87,6 +92,10 @@ class ContractTests(unittest.TestCase):
         for field in self.REQUIRED_ARTIFACT:
             with self.subTest(f"artifact {field}"):
                 self.assertTrue(validate.problems(mutated(lambda r, f=field: r["artifacts"][0].pop(f))))
+
+    def test_note_licence_is_optional_in_the_registry(self):
+        note = next(a for a in mutated(lambda r: None)["artifacts"] if a["type"] == "note")
+        self.assertNotIn("license", note)
 
     def test_archived_tool_and_note_need_no_visual(self):
         registry = mutated(lambda r: None)

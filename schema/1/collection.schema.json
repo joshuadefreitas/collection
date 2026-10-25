@@ -212,6 +212,11 @@
                 "$ref": "#/$defs/url"
               },
               "note": {
+                "allOf": [
+                  {
+                    "$ref": "#/$defs/text"
+                  }
+                ],
                 "type": "string",
                 "maxLength": 160
               }
