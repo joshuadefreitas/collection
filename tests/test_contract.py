@@ -56,6 +56,15 @@ class ContractTests(unittest.TestCase):
             with self.subTest(name):
                 self.assertTrue(validate.problems(mutated(change)), f"{name} was accepted")
 
+    def test_every_required_field_is_enforced(self):
+        schema = json.loads(validate.SCHEMA.read_text())
+        for field in schema["required"]:
+            with self.subTest(f"top-level {field}"):
+                self.assertTrue(validate.problems(mutated(lambda r, f=field: r.pop(f))))
+        for field in schema["$defs"]["artifact"]["required"]:
+            with self.subTest(f"artifact {field}"):
+                self.assertTrue(validate.problems(mutated(lambda r, f=field: r["artifacts"][0].pop(f))))
+
     def test_example_uses_only_reserved_example_hosts(self):
         text = json.dumps(EXAMPLE)
         self.assertNotIn("github.com", text)
