@@ -56,12 +56,22 @@ class ContractTests(unittest.TestCase):
             with self.subTest(name):
                 self.assertTrue(validate.problems(mutated(change)), f"{name} was accepted")
 
-    def test_every_required_field_is_enforced(self):
+    # The contract is written down here on purpose, not read from the schema under test:
+    # deriving it from the schema would make the test pass for any schema.
+    REQUIRED_TOP = ["schema_version", "updated", "artifacts"]
+    REQUIRED_ARTIFACT = ["id", "type", "status", "title", "claim", "summary", "topics",
+                         "canonical_url", "published", "last_verified"]
+
+    def test_required_fields_are_exactly_the_contract(self):
         schema = json.loads(validate.SCHEMA.read_text())
-        for field in schema["required"]:
+        self.assertEqual(sorted(schema["required"]), sorted(self.REQUIRED_TOP))
+        self.assertEqual(sorted(schema["$defs"]["artifact"]["required"]), sorted(self.REQUIRED_ARTIFACT))
+
+    def test_every_required_field_is_enforced(self):
+        for field in self.REQUIRED_TOP:
             with self.subTest(f"top-level {field}"):
                 self.assertTrue(validate.problems(mutated(lambda r, f=field: r.pop(f))))
-        for field in schema["$defs"]["artifact"]["required"]:
+        for field in self.REQUIRED_ARTIFACT:
             with self.subTest(f"artifact {field}"):
                 self.assertTrue(validate.problems(mutated(lambda r, f=field: r["artifacts"][0].pop(f))))
 
